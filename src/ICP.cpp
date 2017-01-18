@@ -42,6 +42,7 @@ uint64_t loadDepth(pangolin::Image<unsigned short> & depth)
     depthLoc.append(tokens[1]);
 
     pangolin::TypedImage depthRaw = pangolin::LoadImage(depthLoc, pangolin::ImageFileTypePng);
+	pangolin::Image<unsigned short> depthRaw16((unsigned short*)depthRaw.ptr, depthRaw.w, depthRaw.h, depthRaw.w * sizeof(unsigned short));
 
     tokenize(tokens[0], timeTokens, ".");
 
@@ -55,9 +56,7 @@ uint64_t loadDepth(pangolin::Image<unsigned short> & depth)
     {
         for(unsigned int j = 0; j < 640; j++)
         {
-			unsigned char hibyte = depthRaw.RowPtr(i)[j*2];
-			unsigned char lobyte = depthRaw.RowPtr(i)[j*2+1];
-			depth.RowPtr(i)[j] = ((hibyte * 256 + lobyte )  / 5 );
+			depth.RowPtr(i)[j] = depthRaw16(j, i)  / 5;
         }
     }
 
